@@ -1,4 +1,5 @@
 import psutil
+import requests
 def info():
     # 获取CPU信息
     cpu_percent = psutil.cpu_percent(interval=1)
@@ -19,10 +20,21 @@ def info():
     }
     
     return system_info
-def get_ip():
-    # 获取本机IP地址
-    return psutil.net_if_addrs()['en0'][0].address
+import requests
+
+def get_public_ip():
+    try:
+        response = requests.get('https://api.ipify.org?format=json')
+        response.raise_for_status()
+        public_ip = response.json()['ip']
+    except requests.RequestException as e:
+        print(f"Error fetching public IP: {e}")
+        public_ip = None
+    return public_ip
+
+
 
 if __name__ == '__main__':
     print(info())
-    print(get_ip())
+    # 示例调用
+    print(get_public_ip())
