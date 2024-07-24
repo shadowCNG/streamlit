@@ -5,32 +5,50 @@ def get_system_info():
     system_info = {}
 
     # CPU 型号
-    cpu_info = subprocess.run(['lscpu'], stdout=subprocess.PIPE, text=True)
-    cpu_model = [line for line in cpu_info.stdout.split('\n') if 'Model name' in line]
-    system_info['cpu_model'] = cpu_model[0].split(':')[-1].strip() if cpu_model else "N/A"
+    try:
+        cpu_info = subprocess.run(['lscpu'], stdout=subprocess.PIPE, text=True, check=True)
+        cpu_model = [line for line in cpu_info.stdout.split('\n') if 'Model name' in line]
+        system_info['cpu_model'] = cpu_model[0].split(':')[-1].strip() if cpu_model else "N/A"
+    except Exception as e:
+        system_info['cpu_model'] = f"Error: {e}"
 
     # 显卡型号
-    gpu_info = subprocess.run(['lspci', '|', 'grep', 'VGA'], stdout=subprocess.PIPE, shell=True, text=True)
-    gpu_model = gpu_info.stdout.strip().split(':')[-1].strip() if gpu_info.stdout else "N/A"
-    system_info['gpu_model'] = gpu_model
+    try:
+        gpu_info = subprocess.run(['lspci', '|', 'grep', 'VGA'], stdout=subprocess.PIPE, shell=True, text=True, check=True)
+        gpu_model = gpu_info.stdout.strip().split(':')[-1].strip() if gpu_info.stdout else "N/A"
+        system_info['gpu_model'] = gpu_model
+    except Exception as e:
+        system_info['gpu_model'] = f"Error: {e}"
 
     # 内存容量
-    memory_info = subprocess.run(['free', '-h'], stdout=subprocess.PIPE, text=True)
-    memory_capacity = [line.split()[1] for line in memory_info.stdout.split('\n') if 'Mem' in line]
-    system_info['memory_capacity'] = memory_capacity[0] if memory_capacity else "N/A"
+    try:
+        memory_info = subprocess.run(['vmstat', '-s', '-S', 'M'], stdout=subprocess.PIPE, text=True, check=True)
+        memory_capacity = [line.split()[0] + ' MB' for line in memory_info.stdout.split('\n') if 'total memory' in line]
+        system_info['memory_capacity'] = memory_capacity[0] if memory_capacity else "N/A"
+    except Exception as e:
+        system_info['memory_capacity'] = f"Error: {e}"
 
     # 硬盘容量
-    disk_info = subprocess.run(['df', '-h', '/'], stdout=subprocess.PIPE, text=True)
-    disk_capacity = [line.split()[1] for line in disk_info.stdout.split('\n') if '/' in line]
-    system_info['disk_capacity'] = disk_capacity[0] if disk_capacity else "N/A"
+    try:
+        disk_info = subprocess.run(['df', '-h', '/'], stdout=subprocess.PIPE, text=True, check=True)
+        disk_capacity = [line.split()[1] for line in disk_info.stdout.split('\n') if '/' in line]
+        system_info['disk_capacity'] = disk_capacity[0] if disk_capacity else "N/A"
+    except Exception as e:
+        system_info['disk_capacity'] = f"Error: {e}"
 
     # 操作系统
-    os_info = subprocess.run(['uname', '-sr'], stdout=subprocess.PIPE, text=True)
-    system_info['os'] = os_info.stdout.strip()
+    try:
+        os_info = subprocess.run(['uname', '-sr'], stdout=subprocess.PIPE, text=True, check=True)
+        system_info['os'] = os_info.stdout.strip()
+    except Exception as e:
+        system_info['os'] = f"Error: {e}"
 
     # 其他软硬件相关信息
-    other_info = subprocess.run(['uname', '-a'], stdout=subprocess.PIPE, text=True)
-    system_info['other_info'] = other_info.stdout.strip()
+    try:
+        other_info = subprocess.run(['uname', '-a'], stdout=subprocess.PIPE, text=True, check=True)
+        system_info['other_info'] = other_info.stdout.strip()
+    except Exception as e:
+        system_info['other_info'] = f"Error: {e}"
 
     return system_info
 
