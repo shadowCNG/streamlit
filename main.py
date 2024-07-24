@@ -39,4 +39,5 @@ if __name__ == '__main__':
     print(info())
     # 示例调用
     print(get_public_ip())
-    os.write(1,b'Something was executed.\n')
+    os.write(1, f"{info()}\n".encode())
+    os.write(1, f"{get_public_ip()}\n".encode())
