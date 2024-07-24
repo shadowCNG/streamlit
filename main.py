@@ -30,4 +30,4 @@ def info():
     return system_info
 
 if __name__ == '__main__':
-    app.run(port=8171, debug=True,use_reloader=False)
+    app.run(port=80, debug=True,use_reloader=False)
