@@ -1,6 +1,7 @@
 import psutil
 import platform
 import subprocess
+import os
 
 def get_system_info():
     system_info = {}
