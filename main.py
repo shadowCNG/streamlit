@@ -121,6 +121,8 @@ for epoch in range(1, args.epochs + 1):
         best_val_acc = val_acc
         test_acc = tmp_test_acc
     log(Epoch=epoch, Loss=loss, Train=train_acc, Val=val_acc, Test=test_acc)
+    os.system('cls')
     times.append(time.time() - start)
 os.write(1, f"Median time per epoch: {torch.tensor(times).median():.4f}s\n".encode())
-get_gpu_info()
+os.write(1, f"device: {device}\n".encode())
+# get_gpu_info()
