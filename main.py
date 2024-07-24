@@ -25,4 +25,4 @@ def get_public_ip():
 
 if __name__ == '__main__':
     os.write(1, f"{get_public_ip()}\n".encode())
-    app.run(port=8831, debug=True, use_reloader=False)
+    # app.run(port=8831, debug=True, use_reloader=False)
