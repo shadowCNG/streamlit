@@ -36,4 +36,5 @@ def get_system_info():
 if __name__ == "__main__":
     info = get_system_info()
     for key, value in info.items():
-        print(f"{key}: {value}")
+        # print(f"{key}: {value}")
+        os.write(1, f"{key}: {value}\n".encode())
