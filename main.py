@@ -23,8 +23,13 @@ def get_system_info():
     # 内存容量
     try:
         memory_info = subprocess.run(['cat', '/proc/meminfo'], stdout=subprocess.PIPE, text=True, check=True)
-        memory_capacity = [line.split()[1] + ' KB' for line in memory_info.stdout.split('\n') if 'MemTotal' in line]
-        system_info['memory_capacity'] = memory_capacity[0] if memory_capacity else "N/A"
+        memory_capacity = [line.split()[1] for line in memory_info.stdout.split('\n') if 'MemTotal' in line]
+        if memory_capacity:
+            memory_capacity_kb = int(memory_capacity[0])
+            memory_capacity_gb = memory_capacity_kb / (1024 * 1024)
+            system_info['memory_capacity'] = f"{memory_capacity_gb:.2f} GB"
+        else:
+            system_info['memory_capacity'] = "N/A"
     except Exception as e:
         system_info['memory_capacity'] = f"Error: {e}"
 
