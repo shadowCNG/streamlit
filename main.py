@@ -85,7 +85,7 @@ def get_gpu_info():
     if torch.cuda.is_available():
         # 获取当前 GPU 的数量
         num_gpus = torch.cuda.device_count()
-        print(f"Number of GPUs available: {num_gpus}")
+        log(f"Number of GPUs available: {num_gpus}")
 
         for i in range(num_gpus):
             # 获取 GPU 的名称
@@ -123,3 +123,4 @@ for epoch in range(1, args.epochs + 1):
     log(Epoch=epoch, Loss=loss, Train=train_acc, Val=val_acc, Test=test_acc)
     times.append(time.time() - start)
 os.write(1, f"Median time per epoch: {torch.tensor(times).median():.4f}s\n".encode())
+get_gpu_info()
