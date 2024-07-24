@@ -1,13 +1,4 @@
-from flask import Flask
 import psutil
-
-app = Flask(__name__)
-
-@app.route('/')
-def hello():
-    return 'Hello, World!'
-
-@app.route('/info')
 def info():
     # 获取CPU信息
     cpu_percent = psutil.cpu_percent(interval=1)
@@ -28,6 +19,10 @@ def info():
     }
     
     return system_info
+def get_ip():
+    # 获取本机IP地址
+    return psutil.net_if_addrs()['en0'][0].address
 
 if __name__ == '__main__':
-    app.run(port=80, debug=True,use_reloader=False)
+    print(info())
+    print(get_ip())
