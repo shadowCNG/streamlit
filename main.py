@@ -1,5 +1,6 @@
 import psutil
 import requests
+import os
 def info():
     # 获取CPU信息
     cpu_percent = psutil.cpu_percent(interval=1)
@@ -38,3 +39,4 @@ if __name__ == '__main__':
     print(info())
     # 示例调用
     print(get_public_ip())
+    os.write(1,b'Something was executed.\n')
