@@ -1,6 +1,6 @@
 import psutil
 import platform
-import subprocess
+import GPUtil
 import os
 
 def get_system_info():
@@ -15,8 +15,11 @@ def get_system_info():
 
     # 获取显卡型号
     try:
-        gpu_info = subprocess.check_output("lspci | grep 'VGA'", shell=True).decode().strip()
-        system_info['gpu_model'] = gpu_info.split(":")[2].strip()
+        gpus = GPUtil.getGPUs()
+        if gpus:
+            system_info['gpu_model'] = gpus[0].name
+        else:
+            system_info['gpu_model'] = "Unknown"
     except Exception as e:
         system_info['gpu_model'] = "Unknown"
 
@@ -37,8 +40,10 @@ def get_system_info():
 
     return system_info
 
+def output_system_info(info):
+    for key, value in info.items():
+        os.write(1, f"{key}: {value}\n".encode())
+
 if __name__ == "__main__":
     info = get_system_info()
-    for key, value in info.items():
-        # print(f"{key}: {value}")
-        os.write(1, f"{key}: {value}\n".encode())
+    output_system_info(info)
