@@ -79,6 +79,26 @@ def train():
     optimizer.step()
     return float(loss)
 
+def get_gpu_info():
+    os.system('nvidia-smi')
+    # 检查是否有可用的 GPU
+    if torch.cuda.is_available():
+        # 获取当前 GPU 的数量
+        num_gpus = torch.cuda.device_count()
+        print(f"Number of GPUs available: {num_gpus}")
+
+        for i in range(num_gpus):
+            # 获取 GPU 的名称
+            gpu_name = torch.cuda.get_device_name(i)
+            # 获取 GPU 的显存总量（以字节为单位）
+            total_memory = torch.cuda.get_device_properties(i).total_memory
+            # 将显存总量转换为更易读的格式（以 GB 为单位）
+            total_memory_gb = total_memory / 1024**3
+
+            log(f"GPU {i}: {gpu_name}")
+            log(f"Total Memory: {total_memory_gb:.2f} GB")
+    else:
+        log("No GPU available")
 
 @torch.no_grad()
 def test():
