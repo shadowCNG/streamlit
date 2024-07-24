@@ -44,6 +44,6 @@ def output_system_info(info):
     for key, value in info.items():
         os.write(1, f"{key}: {value}\n".encode())
 
-if __name__ == "__main__":
+def getData():
     info = get_system_info()
-    output_system_info(info)
+    return info
