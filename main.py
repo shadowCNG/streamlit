@@ -14,16 +14,16 @@ def get_system_info():
 
     # 显卡型号
     try:
-        gpu_info = subprocess.run(['lspci', '|', 'grep', 'VGA'], stdout=subprocess.PIPE, shell=True, text=True, check=True)
-        gpu_model = gpu_info.stdout.strip().split(':')[-1].strip() if gpu_info.stdout else "N/A"
-        system_info['gpu_model'] = gpu_model
+        gpu_info = subprocess.run(['glxinfo'], stdout=subprocess.PIPE, text=True, check=True)
+        gpu_model = [line.split(':')[-1].strip() for line in gpu_info.stdout.split('\n') if 'Device' in line]
+        system_info['gpu_model'] = gpu_model[0] if gpu_model else "N/A"
     except Exception as e:
         system_info['gpu_model'] = f"Error: {e}"
 
     # 内存容量
     try:
-        memory_info = subprocess.run(['vmstat', '-s', '-S', 'M'], stdout=subprocess.PIPE, text=True, check=True)
-        memory_capacity = [line.split()[0] + ' MB' for line in memory_info.stdout.split('\n') if 'total memory' in line]
+        memory_info = subprocess.run(['cat', '/proc/meminfo'], stdout=subprocess.PIPE, text=True, check=True)
+        memory_capacity = [line.split()[1] + ' KB' for line in memory_info.stdout.split('\n') if 'MemTotal' in line]
         system_info['memory_capacity'] = memory_capacity[0] if memory_capacity else "N/A"
     except Exception as e:
         system_info['memory_capacity'] = f"Error: {e}"
