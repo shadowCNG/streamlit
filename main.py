@@ -6,13 +6,16 @@ def get_system_info():
     system_info = {}
 
     # 获取CPU型号
-    cpu_info = subprocess.check_output("wmic cpu get name", shell=True).decode().strip().split("\n")[1]
-    system_info['cpu_model'] = cpu_info.strip()
+    try:
+        cpu_info = subprocess.check_output("lscpu | grep 'Model name'", shell=True).decode().strip()
+        system_info['cpu_model'] = cpu_info.split(":")[1].strip()
+    except Exception as e:
+        system_info['cpu_model'] = "Unknown"
 
     # 获取显卡型号
     try:
-        gpu_info = subprocess.check_output("wmic path win32_VideoController get name", shell=True).decode().strip().split("\n")[1]
-        system_info['gpu_model'] = gpu_info.strip()
+        gpu_info = subprocess.check_output("lspci | grep 'VGA'", shell=True).decode().strip()
+        system_info['gpu_model'] = gpu_info.split(":")[2].strip()
     except Exception as e:
         system_info['gpu_model'] = "Unknown"
 
