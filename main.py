@@ -49,12 +49,19 @@ with st.container():
     # 文件列表
     files = os.listdir(current_dir)
     selected_file = st.selectbox('选择文件', files)
-                # 按钮水平排列
+
+    # 文件查看和编辑
+    if selected_file:
+        file_path = os.path.join(current_dir, selected_file)
+        if os.path.isfile(file_path):
+            # 按钮水平排列在顶部
             button_col1, button_col2, button_col3 = st.columns(3)
 
             # 保存修改
             with button_col1:
-                if file_content is not None and st.button('保存修改'):
+                if st.button('保存修改'):
+                    with open(file_path, 'r') as file:
+                        file_content = file.read()
                     with open(file_path, 'w') as file:
                         file.write(file_content)
                     st.write(f'文件 {selected_file} 已保存')
@@ -71,10 +78,6 @@ with st.container():
                     os.remove(file_path)
                     st.write(f'文件 {selected_file} 已删除')
 
-    # 文件查看和编辑
-    if selected_file:
-        file_path = os.path.join(current_dir, selected_file)
-        if os.path.isfile(file_path):
             # 尝试读取文件内容，处理不同文件类型
             try:
                 with open(file_path, 'r') as file:
@@ -82,5 +85,3 @@ with st.container():
             except UnicodeDecodeError:
                 st.write('该文件类型不支持直接编辑')
                 file_content = None
-
-
