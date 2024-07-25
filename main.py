@@ -32,11 +32,20 @@ with st.sidebar:
             shutil.move(tmp_file.name, os.path.join(current_dir, uploaded_file.name))
             st.write(f'文件 {uploaded_file.name} 已上传到 {current_dir}')
 
-# 主区域布局
-left_column, right_column = st.columns([3, 2])
+# 右侧区域：交互式Shell
+with st.sidebar:
+    with st.expander('交互式Shell'):
+        shell_command = st.text_area('输入命令', height=100)
+        if st.button('执行命令'):
+            try:
+                result = subprocess.run(shell_command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=current_dir)
+                st.code(result.stdout.decode('utf-8'))
+            except subprocess.CalledProcessError as e:
+                st.error(f'命令执行失败: {e.stderr.decode("utf-8")}')
 
 # 中部区域：文件选择、查看修改、保存、下载和删除按钮
-with left_column:
+# 使用st.container确保中部区域铺满剩余区域
+with st.container():
     # 文件列表
     files = os.listdir(current_dir)
     selected_file = st.selectbox('选择文件', files)
@@ -74,14 +83,3 @@ with left_column:
                 if st.button('删除文件'):
                     os.remove(file_path)
                     st.write(f'文件 {selected_file} 已删除')
-
-# 右侧区域：交互式Shell
-with right_column:
-    with st.expander('交互式Shell'):
-        shell_command = st.text_area('输入命令', height=100)
-        if st.button('执行命令'):
-            try:
-                result = subprocess.run(shell_command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=current_dir)
-                st.code(result.stdout.decode('utf-8'))
-            except subprocess.CalledProcessError as e:
-                st.error(f'命令执行失败: {e.stderr.decode("utf-8")}')
