@@ -49,20 +49,7 @@ with st.container():
     # 文件列表
     files = os.listdir(current_dir)
     selected_file = st.selectbox('选择文件', files)
-
-    # 文件查看和编辑
-    if selected_file:
-        file_path = os.path.join(current_dir, selected_file)
-        if os.path.isfile(file_path):
-            # 尝试读取文件内容，处理不同文件类型
-            try:
-                with open(file_path, 'r') as file:
-                    file_content = st.text_area('文件内容', value=file.read(), height=400)
-            except UnicodeDecodeError:
-                st.write('该文件类型不支持直接编辑')
-                file_content = None
-
-            # 按钮水平排列
+                # 按钮水平排列
             button_col1, button_col2, button_col3 = st.columns(3)
 
             # 保存修改
@@ -83,3 +70,17 @@ with st.container():
                 if st.button('删除文件'):
                     os.remove(file_path)
                     st.write(f'文件 {selected_file} 已删除')
+
+    # 文件查看和编辑
+    if selected_file:
+        file_path = os.path.join(current_dir, selected_file)
+        if os.path.isfile(file_path):
+            # 尝试读取文件内容，处理不同文件类型
+            try:
+                with open(file_path, 'r') as file:
+                    file_content = st.text_area('文件内容', value=file.read(), height=400)
+            except UnicodeDecodeError:
+                st.write('该文件类型不支持直接编辑')
+                file_content = None
+
+
