@@ -24,12 +24,18 @@ def list_files_and_dirs(directory):
             files.append(item)
     return dirs, files
 
-dirs, files = list_files_and_dirs(st.session_state.current_dir)
+def get_directory_options(current_dir):
+    options = ['../']  # 添加上级目录选项
+    dirs, _ = list_files_and_dirs(current_dir)
+    options.extend(dirs)
+    return options
 
 # 显示目录
-selected_dir = st.sidebar.selectbox('选择目录', ['/'] + dirs)
-if selected_dir == '/':
-    st.session_state.current_dir = os.getcwd()
+directory_options = get_directory_options(st.session_state.current_dir)
+selected_dir = st.sidebar.selectbox('选择目录', directory_options)
+
+if selected_dir == '../':
+    st.session_state.current_dir = os.path.dirname(st.session_state.current_dir)
 else:
     st.session_state.current_dir = os.path.join(st.session_state.current_dir, selected_dir)
 st.sidebar.write(f'当前目录: {st.session_state.current_dir}')
@@ -45,6 +51,7 @@ if uploaded_file is not None:
         st.sidebar.success('文件已上传')
 
 # 显示文件
+_, files = list_files_and_dirs(st.session_state.current_dir)
 selected_file = st.sidebar.selectbox('选择文件', files)
 
 # 主页面显示文件内容和操作选项
