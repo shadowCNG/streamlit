@@ -7,7 +7,7 @@ import tempfile
 st.title('文件管理系统')
 
 # 左侧区域布局
-left_column, right_column = st.columns([1, 3])
+left_column, right_column = st.columns([2, 5])
 
 # 左侧区域：目录选择和上传按钮
 with left_column:
@@ -25,8 +25,8 @@ with left_column:
             current_dir = os.path.join(current_dir, selected_file)
             st.write(f'切换到目录: {current_dir}')
 
-    # 文件上传
-    uploaded_file = st.file_uploader('上传文件', type=['txt', 'py', 'md', 'jpg', 'png'])
+    # 文件上传（不限类型和大小）
+    uploaded_file = st.file_uploader('上传文件')
     if uploaded_file is not None:
         with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
             tmp_file.write(uploaded_file.getvalue())
@@ -44,21 +44,32 @@ with right_column:
     if selected_file:
         file_path = os.path.join(current_dir, selected_file)
         if os.path.isfile(file_path):
-            with open(file_path, 'r') as file:
-                file_content = st.text_area('文件内容', value=file.read(), height=400)
+            # 尝试读取文件内容，处理不同文件类型
+            try:
+                with open(file_path, 'r') as file:
+                    file_content = st.text_area('文件内容', value=file.read(), height=400)
+            except UnicodeDecodeError:
+                st.write('该文件类型不支持直接编辑')
+                file_content = None
+
+            # 按钮水平排列
+            button_col1, button_col2, button_col3 = st.columns(3)
 
             # 保存修改
-            if st.button('保存修改'):
-                with open(file_path, 'w') as file:
-                    file.write(file_content)
-                st.write(f'文件 {selected_file} 已保存')
+            with button_col1:
+                if file_content is not None and st.button('保存修改'):
+                    with open(file_path, 'w') as file:
+                        file.write(file_content)
+                    st.write(f'文件 {selected_file} 已保存')
 
             # 文件下载
-            if st.button('下载文件'):
-                with open(file_path, 'rb') as file:
-                    st.download_button('下载', file.read(), file_name=selected_file)
+            with button_col2:
+                if st.button('下载文件'):
+                    with open(file_path, 'rb') as file:
+                        st.download_button('下载', file.read(), file_name=selected_file)
 
             # 文件删除
-            if st.button('删除文件'):
-                os.remove(file_path)
-                st.write(f'文件 {selected_file} 已删除')
+            with button_col3:
+                if st.button('删除文件'):
+                    os.remove(file_path)
+                    st.write(f'文件 {selected_file} 已删除')
