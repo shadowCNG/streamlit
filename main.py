@@ -76,11 +76,11 @@ with right_column:
                     st.write(f'文件 {selected_file} 已删除')
 
     # 交互式Shell
-    st.subheader('交互式Shell')
-    shell_command = st.text_area('输入命令', height=100)
-    if st.button('执行命令'):
-        try:
-            result = subprocess.run(shell_command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=current_dir)
-            st.code(result.stdout.decode('utf-8'))
-        except subprocess.CalledProcessError as e:
-            st.error(f'命令执行失败: {e.stderr.decode("utf-8")}')
+    with st.expander('交互式Shell'):
+        shell_command = st.text_area('输入命令', height=100)
+        if st.button('执行命令'):
+            try:
+                result = subprocess.run(shell_command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=current_dir)
+                st.code(result.stdout.decode('utf-8'))
+            except subprocess.CalledProcessError as e:
+                st.error(f'命令执行失败: {e.stderr.decode("utf-8")}')
