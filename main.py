@@ -7,8 +7,8 @@ import subprocess
 # 设置页面标题
 st.title('文件管理系统')
 
-# 左侧区域布局
-left_column, right_column = st.columns([2, 5])
+# 页面布局
+left_column, middle_column, right_column = st.columns([2, 3, 2])
 
 # 左侧区域：目录选择和上传按钮
 with left_column:
@@ -35,8 +35,8 @@ with left_column:
             shutil.move(tmp_file.name, os.path.join(current_dir, uploaded_file.name))
             st.write(f'文件 {uploaded_file.name} 已上传到 {current_dir}')
 
-# 右侧区域：文件操作和交互式Shell
-with right_column:
+# 中部区域：文件选择、查看修改、保存、下载和删除按钮
+with middle_column:
     # 文件列表
     files = os.listdir(current_dir)
     selected_file = st.selectbox('选择文件', files)
@@ -75,7 +75,8 @@ with right_column:
                     os.remove(file_path)
                     st.write(f'文件 {selected_file} 已删除')
 
-    # 交互式Shell
+# 右侧区域：交互式Shell
+with right_column:
     with st.expander('交互式Shell'):
         shell_command = st.text_area('输入命令', height=100)
         if st.button('执行命令'):
