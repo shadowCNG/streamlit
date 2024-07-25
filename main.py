@@ -81,3 +81,14 @@ if selected_file:
             os.remove(file_path)
             st.write(f'文件 {selected_file} 已删除')
             st.sidebar.success('文件已删除')
+
+# 浏览目录按钮
+if st.sidebar.button('浏览目录'):
+    files = os.listdir(st.session_state.current_dir)
+    selected_item = st.sidebar.selectbox('选择文件或目录', files)
+    st.sidebar.write(f'你选择了: {selected_item}')
+
+    # 如果是目录，切换到该目录
+    if os.path.isdir(os.path.join(st.session_state.current_dir, selected_item)):
+        st.session_state.current_dir = os.path.join(st.session_state.current_dir, selected_item)
+        st.sidebar.write(f'切换到目录: {st.session_state.current_dir}')
