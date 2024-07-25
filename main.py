@@ -17,12 +17,14 @@ if st.button("Execute"):
     output_placeholder = st.empty()
     
     # 循环读取命令的输出并动态更新页面
+    stdout_lines = []
     while True:
         output = process.stdout.readline()
         if output == '' and process.poll() is not None:
             break
         if output:
-            output_placeholder.text(output.strip())
+            stdout_lines.append(output.strip())
+            output_placeholder.code('\n'.join(stdout_lines))
         time.sleep(0.1)
     
     # 获取命令的最终输出和错误信息
@@ -30,12 +32,12 @@ if st.button("Execute"):
     
     # 显示命令的最终输出
     st.subheader("Final Output:")
-    st.text(stdout)
+    st.code(stdout)
     
     # 显示命令的错误信息（如果有）
     if stderr:
         st.subheader("Error:")
-        st.text(stderr)
+        st.code(stderr)
 
 # 显示当前目录
 st.subheader("Current Directory:")
