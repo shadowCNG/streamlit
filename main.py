@@ -8,14 +8,10 @@ st.title("Interactive Shell")
 # 创建一个文本输入框，用于输入命令
 command = st.text_input("Enter command:", "ls")
 
-# 创建一个密码输入框，用于输入 sudo 密码
-sudo_password = st.text_input("Enter sudo password:", type="password")
-
 # 创建一个按钮，用于执行命令
 if st.button("Execute"):
     # 使用 subprocess 模块执行命令
-    full_command = f"echo {sudo_password} | sudo -S {command}"
-    process = subprocess.Popen(full_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     
     # 创建占位符用于动态显示输出
     output_placeholder = st.empty()
