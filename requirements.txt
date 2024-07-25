@@ -1,6 +1,7 @@
-﻿Flask==2.3.2
-psutil==5.9.0
-requests==2.28.1
+﻿Flask
+psutil
+requests
 gputil
 torch
 torch_geometric
+streamlit
