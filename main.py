@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import shutil
 import tempfile
+import subprocess
 
 # 设置页面标题
 st.title('文件管理系统')
@@ -34,7 +35,7 @@ with left_column:
             shutil.move(tmp_file.name, os.path.join(current_dir, uploaded_file.name))
             st.write(f'文件 {uploaded_file.name} 已上传到 {current_dir}')
 
-# 右侧区域：文件操作
+# 右侧区域：文件操作和交互式Shell
 with right_column:
     # 文件列表
     files = os.listdir(current_dir)
@@ -73,3 +74,13 @@ with right_column:
                 if st.button('删除文件'):
                     os.remove(file_path)
                     st.write(f'文件 {selected_file} 已删除')
+
+    # 交互式Shell
+    st.subheader('交互式Shell')
+    shell_command = st.text_area('输入命令', height=100)
+    if st.button('执行命令'):
+        try:
+            result = subprocess.run(shell_command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=current_dir)
+            st.code(result.stdout.decode('utf-8'))
+        except subprocess.CalledProcessError as e:
+            st.error(f'命令执行失败: {e.stderr.decode("utf-8")}')
